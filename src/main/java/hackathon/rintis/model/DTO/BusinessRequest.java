@@ -10,5 +10,5 @@ public class BusinessRequest {
     private String budget;
     private String hour;
     private String location;
-    private String businessModel;
+    private String business_model;
 }

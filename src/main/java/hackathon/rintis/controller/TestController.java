@@ -57,7 +57,7 @@ public class TestController {
     public Map<String, Object> getRekomendasiBisnis(@RequestBody BusinessRequest request){
 
         Map<String, String> params = new HashMap<>();
-        params.put("businessModel", request.getBusinessModel());
+        params.put("business_model", request.getBusiness_model());
         params.put("budget", request.getBudget());
         params.put("hour", request.getHour());
         params.put("location", request.getLocation());
