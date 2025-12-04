@@ -1,5 +1,6 @@
 package hackathon.rintis.repository;
 
+import hackathon.rintis.model.DTO.DataBarResponse;
 import hackathon.rintis.model.entity.TransactionList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,22 +18,51 @@ public interface TransactionRepo extends JpaRepository<TransactionList, Integer>
             WHERE id_user = :userId;
         """,
             nativeQuery = true)
-    Integer getBalance(@Param("userId") Integer userId);
+    Double getBalance(@Param("userId") Integer userId);
+
+    @Query(value = """
+            SELECT *
+            FROM transactions_list
+            WHERE id_user = :userId
+            ORDER BY date DESC
+            LIMIT 3
+            """,
+            nativeQuery = true)
+    List<TransactionList> getRecentTransaction(@Param("userId") int userId);
 
     @Query(value = """
     SELECT
-        COALESCE(SUM(CASE WHEN type = '1' THEN amount ELSE 0 END), 0) -
-        COALESCE(SUM(CASE WHEN type = '2' THEN amount ELSE 0 END), 0) AS balance
+        COALESCE(SUM(CASE WHEN type = 1 THEN amount ELSE 0 END), 0) -
+        COALESCE(SUM(CASE WHEN type = 2 THEN amount ELSE 0 END), 0) AS balance
     FROM transaction_list
     WHERE id_user = :userId
-      AND YEAR(`date`) = :year
-      AND MONTH(`date`) = :month
+      AND EXTRACT(YEAR FROM date) = :year
+      AND EXTRACT(MONTH FROM date) = :month
     """,
             nativeQuery = true)
-    Integer getLabaRugi(
+    Double getLabaRugi(
             @Param("userId") Integer userId,
             @Param("year") Integer year,
             @Param("month") Integer month
+    );
+
+    @Query(value = """
+    SELECT
+        COALESCE(SUM(CASE WHEN type IN (2, 3) THEN amount ELSE 0 END), 0) AS sum_expense,
+        COALESCE(SUM(CASE WHEN type = 1 THEN amount ELSE 0 END), 0)      AS sum_income,
+        CAST(date AS date)                                              AS tx_date
+    FROM transaction_list
+    WHERE id_user = :userId
+      AND date >= make_date(:year, :month, 1)
+      AND date <  make_date(:year, :month, 1) + INTERVAL '1 month'
+    GROUP BY CAST(date AS date)
+    ORDER BY tx_date
+    """,
+            nativeQuery = true)
+    List<DataBarResponse> getDataBar(
+            @Param("userId") Integer userId,
+            @Param("year")   Integer year,
+            @Param("month")  Integer month
     );
 
     @Query(

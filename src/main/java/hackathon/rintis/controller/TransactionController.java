@@ -3,18 +3,16 @@ package hackathon.rintis.controller;
 import hackathon.rintis.externalAPI.ExternalApi;
 import hackathon.rintis.helper.TemplateService;
 import hackathon.rintis.model.DTO.BusinessRequest;
+import hackathon.rintis.model.DTO.DataBarResponse;
+import hackathon.rintis.model.DTO.InsertTransDto;
 import hackathon.rintis.model.DTO.KolosalResponse;
 import hackathon.rintis.model.entity.TransactionList;
-import hackathon.rintis.model.entity.UserRintis;
 import hackathon.rintis.scheduler.InsightScheduler;
 import hackathon.rintis.service.TransactionService;
 import hackathon.rintis.service.UserRintisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
@@ -23,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class TestController {
+public class TransactionController {
 
     @Autowired
     private final ExternalApi apiCall;
@@ -40,7 +38,7 @@ public class TestController {
     @Autowired
     private final UserRintisService userService;
 
-    public TestController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService, UserRintisService userService) {
+    public TransactionController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService, UserRintisService userService) {
         this.apiCall = apiCall;
         this.transactionService = transactionService;
         this.insightScheduler = insightScheduler;
@@ -51,12 +49,8 @@ public class TestController {
     @GetMapping("/getInsight")
     public List<Map<String, Object>> testScheduling(final Authentication authentication){
 
-        final var user =
-                userService.getUserByUsername(authentication.getName());
-
-        System.out.println(user.getId());
-
-        return insightScheduler.getInsightDaily();
+        final var user = userService.getUserByUsername(authentication.getName());
+        return insightScheduler.getInsightDaily(user.getId());
     }
 
     @GetMapping("/getRekomendasiItem")
@@ -97,22 +91,43 @@ public class TestController {
     }
 
     @GetMapping("/getBalance")
-    public Integer getBalance(){
-        return transactionService.getCurrentBalance();
+    public Double getBalance(final Authentication authentication){
+        final var user = userService.getUserByUsername(authentication.getName());
+        return transactionService.getCurrentBalance(user.getId());
     }
 
     @GetMapping("/getLabaRugi/{periode}")
-    public Integer getLabaRugi(@PathVariable LocalDate periode){
+    public Double getLabaRugi(@PathVariable LocalDate periode, final Authentication authentication){
 
+        final var user = userService.getUserByUsername(authentication.getName());
         int year = periode.getYear();
         int month = periode.getMonthValue();
 
-        return transactionService.getLabaRugi(year, month);
+        return transactionService.getLabaRugi(year, month, user.getId());
     }
 
-    @GetMapping("/getAllTransaction/{userId}")
-    public List<TransactionList> getAllTransaction(@PathVariable Integer userId){
-        return transactionService.getAll(userId);
+    @GetMapping("/getRecentTransaction")
+    public List<TransactionList> getAllTransaction(final Authentication authentication){
+        final var user = userService.getUserByUsername(authentication.getName());
+        return transactionService.getRecentCashflow(user.getId());
+    }
+
+    @GetMapping("/getDataBar")
+    public List<DataBarResponse> getDataBar(final Authentication authentication){
+
+        LocalDate now = LocalDate.now();
+
+        final var user = userService.getUserByUsername(authentication.getName());
+        return transactionService.getDataBar(user.getId(), now.getYear(), now.getMonthValue());
+    }
+
+    @PostMapping("/insertTransaksi")
+    public String insertTransaksi(@RequestBody List<InsertTransDto> request, final Authentication authentication){
+
+        final var user = userService.getUserByUsername(authentication.getName());
+        transactionService.inserTransaksi(request, user.getId());
+
+        return "Berhasil";
     }
 
 }

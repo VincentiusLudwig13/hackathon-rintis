@@ -32,12 +32,12 @@ public class InsightScheduler {
         this.transactionRepo = transactionRepo;
     }
 
-    @Scheduled(cron = "0 0 3 * * *")
-    public List<Map<String, Object>> getInsightDaily() {
+//    @Scheduled(cron = "0 0 3 * * *")
+    public List<Map<String, Object>> getInsightDaily(Integer userId) {
 
         Map<String, String> params = new HashMap<>();
 
-        String data = transactionRepo.getDataInsightDaily(1);
+        String data = transactionRepo.getDataInsightDaily(userId);
         params.put("DATA_INPUT", data);
 
         String prompt = templateService.generateMessage(3, params);
