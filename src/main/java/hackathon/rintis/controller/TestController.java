@@ -5,6 +5,7 @@ import hackathon.rintis.helper.TemplateService;
 import hackathon.rintis.model.DTO.BusinessRequest;
 import hackathon.rintis.model.DTO.KolosalResponse;
 import hackathon.rintis.model.entity.TransactionList;
+import hackathon.rintis.scheduler.InsightScheduler;
 import hackathon.rintis.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +29,21 @@ public class TestController {
     private final TransactionService transactionService;
 
     @Autowired
+    private final InsightScheduler insightScheduler;
+
+    @Autowired
     private final TemplateService templateService;
 
-    public TestController(ExternalApi apiCall, TransactionService transactionService, TemplateService templateService) {
+    public TestController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService) {
         this.apiCall = apiCall;
         this.transactionService = transactionService;
+        this.insightScheduler = insightScheduler;
         this.templateService = templateService;
+    }
+
+    @GetMapping("/getInsight")
+    public List<Map<String, Object>> testScheduling(){
+        return insightScheduler.getInsightDaily();
     }
 
     @GetMapping("/getRekomendasiItem")
