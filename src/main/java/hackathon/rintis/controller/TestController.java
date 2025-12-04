@@ -5,9 +5,12 @@ import hackathon.rintis.helper.TemplateService;
 import hackathon.rintis.model.DTO.BusinessRequest;
 import hackathon.rintis.model.DTO.KolosalResponse;
 import hackathon.rintis.model.entity.TransactionList;
+import hackathon.rintis.model.entity.UserRintis;
 import hackathon.rintis.scheduler.InsightScheduler;
 import hackathon.rintis.service.TransactionService;
+import hackathon.rintis.service.UserRintisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,15 +37,25 @@ public class TestController {
     @Autowired
     private final TemplateService templateService;
 
-    public TestController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService) {
+    @Autowired
+    private final UserRintisService userService;
+
+    public TestController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService, UserRintisService userService) {
         this.apiCall = apiCall;
         this.transactionService = transactionService;
         this.insightScheduler = insightScheduler;
         this.templateService = templateService;
+        this.userService = userService;
     }
 
     @GetMapping("/getInsight")
-    public List<Map<String, Object>> testScheduling(){
+    public List<Map<String, Object>> testScheduling(final Authentication authentication){
+
+        final var user =
+                userService.getUserByUsername(authentication.getName());
+
+        System.out.println(user.getId());
+
         return insightScheduler.getInsightDaily();
     }
 

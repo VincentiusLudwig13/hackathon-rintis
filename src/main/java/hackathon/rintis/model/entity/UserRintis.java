@@ -14,7 +14,7 @@ import java.sql.Date;
 @Getter
 @Setter @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Users {
+public class UserRintis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

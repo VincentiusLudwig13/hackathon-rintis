@@ -5,7 +5,7 @@ import hackathon.rintis.model.DTO.AuthenticationRequestDto;
 import hackathon.rintis.model.DTO.AuthenticationResponseDto;
 import hackathon.rintis.model.DTO.RegistrationRequestDto;
 import hackathon.rintis.model.DTO.RegistrationResponseDto;
-import hackathon.rintis.service.UserService;
+import hackathon.rintis.service.UserRintisService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class UserController {
+public class UserRintisController {
 
-    private final UserService userRegistrationService;
+    private final UserRintisService userRegistrationService;
 
     private final RegistrationMapper userRegistrationMapper;
 
