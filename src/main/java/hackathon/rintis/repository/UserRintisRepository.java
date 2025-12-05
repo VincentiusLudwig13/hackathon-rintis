@@ -18,6 +18,7 @@ public interface UserRintisRepository extends JpaRepository<UserRintis, Integer>
             value = """
             SELECT 
                 u.username,
+                u.name,
                 u.email,
                 u.created_at,
                 si.webhook_token

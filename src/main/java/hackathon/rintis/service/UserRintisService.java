@@ -35,8 +35,11 @@ public class UserRintisService {
             throw new ValidationException("Username or Email already exists");
         }
 
+
+
         UserRintis userRintis = new UserRintis();
         userRintis.setUsername(request.getUsername());
+        userRintis.setName(request.getName());
         userRintis.setEmail(request.getEmail());
         userRintis.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -54,19 +57,13 @@ public class UserRintisService {
         UserRintis user = userRintisRepository.findByUsername(request.username())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        System.out.println("Uhuy");
-
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(
                         request.username(),
                         request.password()
                 );
 
-        System.out.println("brengky");
-
         authenticationManager.authenticate(authToken);
-
-        System.out.println("Awyeah");
 
         String token = jwtService.generateToken(request.username());
 
