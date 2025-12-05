@@ -2,6 +2,7 @@ package hackathon.rintis.service;
 
 import hackathon.rintis.model.DTO.DataBarResponse;
 import hackathon.rintis.model.DTO.InsertTransDto;
+import hackathon.rintis.model.DTO.SaweriaWebhookPayload;
 import hackathon.rintis.model.entity.TransactionList;
 import hackathon.rintis.repository.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,21 @@ public class TransactionService {
         }
 
         transactionRepo.saveAll(listTrx);
+    }
+
+    public void inserTransaksi(SaweriaWebhookPayload request, Integer userId){
+
+        TransactionList trx = new TransactionList();
+        trx.setAmount(request.getAmountRaw());
+        trx.setDate(java.util.Date.from(
+                LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
+        ));
+        trx.setName(request.getMessage());
+        trx.setType(2);
+        trx.setId_user(userId);
+
+        transactionRepo.save(trx);
+
     }
 
     public Double getLabaRugi(Integer year, Integer month, Integer userId){

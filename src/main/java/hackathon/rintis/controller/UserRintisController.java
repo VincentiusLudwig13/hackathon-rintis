@@ -1,21 +1,16 @@
 package hackathon.rintis.controller;
 
 import hackathon.rintis.mapper.RegistrationMapper;
-import hackathon.rintis.model.DTO.AuthenticationRequestDto;
-import hackathon.rintis.model.DTO.AuthenticationResponseDto;
-import hackathon.rintis.model.DTO.RegistrationRequestDto;
-import hackathon.rintis.model.DTO.RegistrationResponseDto;
+import hackathon.rintis.model.DTO.*;
 import hackathon.rintis.service.UserRintisService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserRintisController {
 
@@ -23,7 +18,7 @@ public class UserRintisController {
 
     private final RegistrationMapper userRegistrationMapper;
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public ResponseEntity<RegistrationResponseDto> registerUser(
             @Valid @RequestBody final RegistrationRequestDto registrationDTO) {
 
@@ -35,11 +30,17 @@ public class UserRintisController {
         );
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponseDto> authenticate(
-            @RequestBody final AuthenticationRequestDto authenticationRequestDto
-    ) {
+    @PostMapping("/auth/login")
+    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody final AuthenticationRequestDto authenticationRequestDto) {
         return ResponseEntity.ok(
                 userRegistrationService.authenticate(authenticationRequestDto));
     }
+
+    @GetMapping("/info")
+    public UserInfoDto userInfo(final Authentication authentication) {
+        final var user = userRegistrationService.getUserByUsername(authentication.getName());
+        return userRegistrationService.getUserInfo(user.getId());
+    }
+
+
 }

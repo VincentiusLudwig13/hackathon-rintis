@@ -2,6 +2,7 @@ package hackathon.rintis.service;
 
 import hackathon.rintis.model.DTO.AuthenticationRequestDto;
 import hackathon.rintis.model.DTO.AuthenticationResponseDto;
+import hackathon.rintis.model.DTO.UserInfoDto;
 import hackathon.rintis.model.entity.UserRintis;
 import hackathon.rintis.repository.UserRintisRepository;
 import jakarta.transaction.Transactional;
@@ -70,6 +71,10 @@ public class UserRintisService {
         String token = jwtService.generateToken(request.username());
 
         return new AuthenticationResponseDto(token, user.getId());
+    }
+
+    public UserInfoDto getUserInfo(Integer userId){
+        return userRintisRepository.getUserInfo(userId);
     }
 }
 
