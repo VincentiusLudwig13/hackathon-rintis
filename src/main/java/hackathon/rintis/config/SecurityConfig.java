@@ -24,7 +24,7 @@ public class SecurityConfig {
         DefaultBearerTokenResolver defaultResolver = new DefaultBearerTokenResolver();
 
         return http
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
