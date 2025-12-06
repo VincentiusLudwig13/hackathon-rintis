@@ -45,9 +45,7 @@ public class TransactionService {
         for (InsertTransDto trans : request){
             TransactionList trx = new TransactionList();
             trx.setAmount(trans.getAmount());
-            trx.setDate(java.util.Date.from(
-                    LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
-            ));
+            trx.setDate(trans.getDate());
             trx.setName(trans.getDesc());
             trx.setType(trans.getType());
             trx.setId_user(userId);
