@@ -148,4 +148,19 @@ public class TransactionController {
         return "Berhasil";
     }
 
+    @GetMapping("/upsertDataItem")
+    public String upsertDataItem(@RequestBody UpdateItemListDto request){
+        itemListService.upsertItem(request);
+        return "OK";
+    }
+
+    @GetMapping("/integrationExpense")
+    public String integrationExpense( List<IntegrationExpenseDto> request, final Authentication authentication){
+
+        final var user = userService.getUserByUsername(authentication.getName());
+        itemListService.IntegrationToExpense(request, user.getId());
+
+        return "OK";
+    }
+
 }

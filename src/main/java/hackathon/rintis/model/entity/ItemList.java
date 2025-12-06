@@ -13,7 +13,7 @@ public class ItemList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String item_name;
@@ -30,5 +30,8 @@ public class ItemList {
     @JsonIgnore
     @Column(nullable = false)
     private Integer user_id;
+
+//    @Column()
+    private String isAdded;
 
 }
