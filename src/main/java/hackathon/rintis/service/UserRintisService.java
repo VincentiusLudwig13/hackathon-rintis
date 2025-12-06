@@ -67,7 +67,7 @@ public class UserRintisService {
 
         String token = jwtService.generateToken(request.username());
 
-        return new AuthenticationResponseDto(token, user.getId());
+        return new AuthenticationResponseDto(token);
     }
 
     public UserInfoDto getUserInfo(Integer userId){

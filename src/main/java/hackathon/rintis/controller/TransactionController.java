@@ -2,12 +2,10 @@ package hackathon.rintis.controller;
 
 import hackathon.rintis.externalAPI.ExternalApi;
 import hackathon.rintis.helper.TemplateService;
-import hackathon.rintis.model.DTO.BusinessRequest;
-import hackathon.rintis.model.DTO.DataBarResponse;
-import hackathon.rintis.model.DTO.InsertTransDto;
-import hackathon.rintis.model.DTO.KolosalResponse;
+import hackathon.rintis.model.DTO.*;
 import hackathon.rintis.model.entity.TransactionList;
 import hackathon.rintis.scheduler.InsightScheduler;
+import hackathon.rintis.service.ItemListService;
 import hackathon.rintis.service.TransactionService;
 import hackathon.rintis.service.UserRintisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +36,16 @@ public class TransactionController {
     @Autowired
     private final UserRintisService userService;
 
-    public TransactionController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService, UserRintisService userService) {
+    @Autowired
+    private final ItemListService itemListService;
+
+    public TransactionController(ExternalApi apiCall, TransactionService transactionService, InsightScheduler insightScheduler, TemplateService templateService, UserRintisService userService, ItemListService itemListService) {
         this.apiCall = apiCall;
         this.transactionService = transactionService;
         this.insightScheduler = insightScheduler;
         this.templateService = templateService;
         this.userService = userService;
+        this.itemListService = itemListService;
     }
 
     @GetMapping("/getInsight")
@@ -54,7 +56,9 @@ public class TransactionController {
     }
 
     @GetMapping("/getRekomendasiItem")
-    public Map<String, Object> getRekomendasiItem(@RequestBody BusinessRequest request){
+    public Map<String, Object> getRekomendasiItem(@RequestBody BusinessRequest request, final Authentication authentication){
+
+        final var user = userService.getUserByUsername(authentication.getName());
 
         Map<String, String> params = new HashMap<>();
         params.put("businessType", request.getBusinessType());
@@ -67,11 +71,16 @@ public class TransactionController {
 
         String content = response.getChoices().get(0).getMessage().getContent();
 
+        RootDto response_item = mapper.readValue(content, RootDto.class);
+        List<ItemDto> items = response_item.getData().getItems();
+
+        itemListService.insertItem(items, user.getId());
+
         return mapper.readValue(content, Map.class);
     }
 
     @GetMapping("/getRekomendasiBisnis")
-    public Map<String, Object> getRekomendasiBisnis(@RequestBody BusinessRequest request){
+    public Map<String, Object> getRekomendasiBisnis(@RequestBody BusinessRequest request, final Authentication authentication){
 
         Map<String, String> params = new HashMap<>();
         params.put("business_model", request.getBusiness_model());
@@ -119,6 +128,15 @@ public class TransactionController {
 
         final var user = userService.getUserByUsername(authentication.getName());
         return transactionService.getDataBar(user.getId(), now.getYear(), now.getMonthValue());
+    }
+
+    @GetMapping("/getAll")
+    public List<TransactionList> getAll(final Authentication authentication){
+
+        LocalDate now = LocalDate.now();
+
+        final var user = userService.getUserByUsername(authentication.getName());
+        return transactionService.getAll(user.getId());
     }
 
     @PostMapping("/insertTransaksi")

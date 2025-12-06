@@ -14,7 +14,7 @@ public interface TransactionRepo extends JpaRepository<TransactionList, Integer>
 
     @Query(value = """
             SELECT
-                COALESCE(SUM(CASE WHEN type = '1' THEN amount ELSE 0 END), 0) -
+                COALESCE(SUM(CASE WHEN type IN ('1', '4') THEN amount ELSE 0 END), 0) -
                 COALESCE(SUM(CASE WHEN type IN ('2', '3') THEN amount ELSE 0 END), 0) AS balance
             FROM transaction_list
             WHERE id_user = :userId;
@@ -24,7 +24,7 @@ public interface TransactionRepo extends JpaRepository<TransactionList, Integer>
 
     @Query(value = """
             SELECT *
-            FROM transactions_list
+            FROM transaction_list
             WHERE id_user = :userId
             ORDER BY date DESC
             LIMIT 3
@@ -50,7 +50,7 @@ public interface TransactionRepo extends JpaRepository<TransactionList, Integer>
 
     @Query(value = """
     SELECT
-        COALESCE(SUM(CASE WHEN type IN (2, 3) THEN amount ELSE 0 END), 0) AS sum_expense,
+        COALESCE(SUM(CASE WHEN type = 2 THEN amount ELSE 0 END), 0) AS sum_expense,
         COALESCE(SUM(CASE WHEN type = 1 THEN amount ELSE 0 END), 0)      AS sum_income,
         CAST(date AS date)                                              AS tx_date
     FROM transaction_list
@@ -76,6 +76,7 @@ public interface TransactionRepo extends JpaRepository<TransactionList, Integer>
                     tl."type",
                     CASE 
                         WHEN tl."type" = '1' THEN 'Revenue'
+                        WHEN tl."type" = '4' THEN 'Modal Awal'
                         WHEN tl."type" = '2' THEN 'Operational Expense (Opex)'
                         WHEN tl."type" = '3' THEN 'Investment (Capex)'
                         ELSE 'Unknown'
