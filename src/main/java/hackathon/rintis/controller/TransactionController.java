@@ -154,6 +154,16 @@ public class TransactionController {
         return "OK";
     }
 
+    @GetMapping("/getItemList")
+    public String getItemList(final Authentication authentication){
+
+        final var user = userService.getUserByUsername(authentication.getName());
+        itemListService.getListItem(user.getId());
+        return "OK";
+    }
+
+
+
     @GetMapping("/integrationExpense")
     public String integrationExpense( List<IntegrationExpenseDto> request, final Authentication authentication){
 
