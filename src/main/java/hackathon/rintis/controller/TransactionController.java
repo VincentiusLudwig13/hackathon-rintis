@@ -155,6 +155,12 @@ public class TransactionController {
         return "OK";
     }
 
+    @PostMapping("/deleteItem")
+    public String deleteItem(@RequestBody UpdateItemListDto request){
+        itemListService.deleteItem(request);
+        return "OK";
+    }
+
     @GetMapping("/getItemList")
     public List<ItemList> getItemList(final Authentication authentication){
         final var user = userService.getUserByUsername(authentication.getName());
