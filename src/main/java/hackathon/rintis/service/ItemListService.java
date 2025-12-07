@@ -87,15 +87,16 @@ public class ItemListService {
 
     }
 
-    public void deleteItem(UpdateItemListDto request){
+    public void deleteItem(List<UpdateItemListDto> request){
 
-        ItemList item;
-        item = itemListRepository.findById(request.itemId())
-                .orElse(new ItemList());
+        request.forEach(r -> {
+            ItemList item = itemListRepository.findById(r.itemId())
+                    .orElse(new ItemList());
 
-        item.setIsAdded("3");
+            item.setIsAdded("3");
 
-        itemListRepository.save(item);
+            itemListRepository.save(item);
+        });
 
     }
 

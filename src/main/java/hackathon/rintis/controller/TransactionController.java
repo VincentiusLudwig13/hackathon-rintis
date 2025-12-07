@@ -156,7 +156,7 @@ public class TransactionController {
     }
 
     @PostMapping("/deleteItem")
-    public String deleteItem(@RequestBody UpdateItemListDto request){
+    public String deleteItem(@RequestBody List<UpdateItemListDto> request){
         itemListService.deleteItem(request);
         return "OK";
     }
