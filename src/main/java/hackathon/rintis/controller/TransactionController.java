@@ -55,8 +55,8 @@ public class TransactionController {
         return insightScheduler.getInsightDaily(user.getId());
     }
 
-    @GetMapping("/getRekomendasiItem")
-    public Map<String, Object> getRekomendasiItem(@RequestBody BusinessRequest request, final Authentication authentication){
+    @PostMapping("/getRekomendasiItem")
+    public Map<String, Object> getRekomendasiItem(@RequestBody ItemRequest request, final Authentication authentication){
 
         final var user = userService.getUserByUsername(authentication.getName());
 
@@ -79,7 +79,7 @@ public class TransactionController {
         return mapper.readValue(content, Map.class);
     }
 
-    @GetMapping("/getRekomendasiBisnis")
+    @PostMapping("/getRekomendasiBisnis")
     public Map<String, Object> getRekomendasiBisnis(@RequestBody BusinessRequest request, final Authentication authentication){
 
         Map<String, String> params = new HashMap<>();
@@ -148,7 +148,7 @@ public class TransactionController {
         return "Berhasil";
     }
 
-    @GetMapping("/upsertDataItem")
+    @PostMapping("/upsertDataItem")
     public String upsertDataItem(@RequestBody UpdateItemListDto request){
         itemListService.upsertItem(request);
         return "OK";
@@ -164,7 +164,7 @@ public class TransactionController {
 
 
 
-    @GetMapping("/integrationExpense")
+    @PostMapping("/integrationExpense")
     public String integrationExpense( List<IntegrationExpenseDto> request, final Authentication authentication){
 
         final var user = userService.getUserByUsername(authentication.getName());

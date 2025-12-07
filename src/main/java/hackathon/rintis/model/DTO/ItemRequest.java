@@ -5,9 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BusinessRequest {
+public class ItemRequest {
     private String budget;
-    private String hour;
-    private String location;
-    private String business_model;
+    private String businessType;
 }
