@@ -170,7 +170,7 @@ public class TransactionController {
 
 
     @PostMapping("/integrationExpense")
-    public String integrationExpense( List<IntegrationExpenseDto> request, final Authentication authentication){
+    public String integrationExpense(@RequestBody List<IntegrationExpenseDto> request, final Authentication authentication){
 
         final var user = userService.getUserByUsername(authentication.getName());
         itemListService.IntegrationToExpense(request, user.getId());
