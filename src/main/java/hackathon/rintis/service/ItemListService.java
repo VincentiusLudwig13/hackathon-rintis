@@ -40,7 +40,7 @@ public class ItemListService {
     public List<ItemList> getListItem(Integer userId) {
         return itemListRepository.findAll()
                 .stream()
-                .filter(v -> userId.equals(v.getUser_id()) && !Objects.equals(v.getIsAdded(), "1"))
+                .filter(v -> userId.equals(v.getUser_id()) && v.getIsAdded() == null)
                 .collect(Collectors.toList());
     }
 
