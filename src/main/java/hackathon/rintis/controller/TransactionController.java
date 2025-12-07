@@ -3,6 +3,7 @@ package hackathon.rintis.controller;
 import hackathon.rintis.externalAPI.ExternalApi;
 import hackathon.rintis.helper.TemplateService;
 import hackathon.rintis.model.DTO.*;
+import hackathon.rintis.model.entity.ItemList;
 import hackathon.rintis.model.entity.TransactionList;
 import hackathon.rintis.scheduler.InsightScheduler;
 import hackathon.rintis.service.ItemListService;
@@ -155,11 +156,9 @@ public class TransactionController {
     }
 
     @GetMapping("/getItemList")
-    public String getItemList(final Authentication authentication){
-
+    public List<ItemList> getItemList(final Authentication authentication){
         final var user = userService.getUserByUsername(authentication.getName());
-        itemListService.getListItem(user.getId());
-        return "OK";
+        return itemListService.getListItem(user.getId());
     }
 
 
