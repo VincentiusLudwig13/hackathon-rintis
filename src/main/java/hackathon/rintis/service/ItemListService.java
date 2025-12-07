@@ -66,7 +66,7 @@ public class ItemListService {
         });
     }
 
-    public void upsertItem(UpdateItemListDto request){
+    public void upsertItem(UpdateItemListDto request, Integer userId){
 
         ItemList item;
 
@@ -82,6 +82,7 @@ public class ItemListService {
         item.setDescription(request.description());
         item.setSource_of_price_data(request.source_of_price_data());
         item.setIsAdded(request.isAdded());
+        item.setUser_id(userId);
 
         itemListRepository.save(item);
 

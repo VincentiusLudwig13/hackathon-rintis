@@ -150,8 +150,9 @@ public class TransactionController {
     }
 
     @PostMapping("/upsertDataItem")
-    public String upsertDataItem(@RequestBody UpdateItemListDto request){
-        itemListService.upsertItem(request);
+    public String upsertDataItem(@RequestBody UpdateItemListDto request, final Authentication authentication){
+        final var user = userService.getUserByUsername(authentication.getName());
+        itemListService.upsertItem(request, user.getId());
         return "OK";
     }
 
