@@ -81,7 +81,7 @@ public class ItemListService {
         item.setItem_name(request.itemName());
         item.setDescription(request.description());
         item.setSource_of_price_data(request.source_of_price_data());
-        item.setIsAdded(request.isAdded());
+//        item.setIsAdded(request.isAdded());
         item.setUser_id(userId);
 
         itemListRepository.save(item);
